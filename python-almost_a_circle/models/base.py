@@ -7,7 +7,7 @@ from models.square import Square
 class Base:
     @classmethod
     def from_json_string(cls, json_string):
-        """Converts a JSON string into a list of objects."""
+        """Converts a JSON string into a list of dictionaries."""
         if not json_string:
             return []
         return json.loads(json_string)
@@ -34,7 +34,7 @@ class Base:
             json_string = file.read()
         
         # If the file is empty or contains "[]", return an empty list
-        if json_string == "[]":
+        if json_string == "[]" or not json_string:
             return []
         
         # Convert the JSON string to a list of dictionaries
@@ -42,3 +42,4 @@ class Base:
         
         # Create instances based on the dictionary and return them
         return [cls.create(**item) for item in list_of_dicts]
+
