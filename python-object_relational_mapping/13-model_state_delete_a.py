@@ -1,24 +1,24 @@
 #!/usr/bin/python3
-"""deletes data from database"""
-import sys
-from model_state import Base, State
-from sqlalchemy.orm import sessionmaker
+"""
+Changes the name of the State object where id=2 to New Mexico from a database
+"""
+
+import sqlalchemy
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sys import argv
+from model_state import Base, State
 
 
 if __name__ == "__main__":
-    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
-                           pool_pre_ping=True)
-    Session = sessionmaker(bind=engine)
+    eng = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(argv[1],
+                                                                    argv[2],
+                                                                    argv[3]))
+    Base.metadata.create_all(eng)
+    Session = sessionmaker(bind=eng)
     session = Session()
-    Base.metadata.create_all(engine)
-
-    result = session.query(State).filter(State.name.like('%a%'))
-
-    for row in result:
-        session.delete(row)
-
+    states = session.query(State).filter(State.name.like('%a%'))
+    for state in states:
+        session.delete(state)
     session.commit()
-
     session.close()
