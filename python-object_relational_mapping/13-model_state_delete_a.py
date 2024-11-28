@@ -1,17 +1,24 @@
 #!/usr/bin/python3
-""" module delete states """
+"""deletes data from database"""
+import sys
+from model_state import Base, State
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 
 
 if __name__ == "__main__":
-    from sys import argv
-    from model_state import Base, State
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
-        argv[1], argv[2], argv[3]), pool_pre_ping=True)
+    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
+                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
     Session = sessionmaker(bind=engine)
     session = Session()
     Base.metadata.create_all(engine)
-    st = session.query(State).filter(State.
 
+    result = session.query(State).filter(State.name.like('%a%'))
+
+    for row in result:
+        session.delete(row)
+
+    session.commit()
+
+    session.close()
