@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import json
 from os import path
+from models.rectangle import Rectangle
+from models.square import Square
 
 class Base:
     @classmethod
@@ -13,8 +15,10 @@ class Base:
     @classmethod
     def create(cls, **dictionary):
         """Creates an instance with the provided dictionary."""
-        # Assume this method is implemented to create an object from a dictionary
-        pass
+        if cls.__name__ == 'Rectangle':
+            return Rectangle(**dictionary)
+        elif cls.__name__ == 'Square':
+            return Square(**dictionary)
 
     @classmethod
     def load_from_file(cls):
